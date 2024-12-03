@@ -113,13 +113,12 @@ if tabs == "Visualisasi Data":
     total_bulan = data_filtered.iloc[0, bulan_index] if not data_filtered.empty else 0
     st.write(f"**Total Kunjungan Bulan {bulan}:** {total_bulan:,.2f}")
 
-    # Plot chart distribusi bulanan
+    # Plot chart distribusi bulanan secara vertikal
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax, palette="viridis")
+    sns.barplot(data=bulan_data, y="Bulan", x="Total Kunjungan", ax=ax, palette="viridis")
     ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
-    ax.set_xlabel("Bulan")
-    ax.set_ylabel("Total Kunjungan")
-    ax.tick_params(axis='x', rotation=45)
+    ax.set_xlabel("Total Kunjungan")
+    ax.set_ylabel("Bulan")
     st.pyplot(fig)
 
 # Analisis Keseluruhan
@@ -129,14 +128,13 @@ elif tabs == "Analisis Keseluruhan":
     total_data.columns = ["Pintu Masuk", "Total Kunjungan"]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(data=total_data, x="Pintu Masuk", y="Total Kunjungan", ax=ax, palette="coolwarm")
+    sns.barplot(data=total_data, y="Pintu Masuk", x="Total Kunjungan", ax=ax, palette="coolwarm")
     ax.set_title("Total Kunjungan Wisata per Pintu Masuk")
-    ax.set_xlabel("Pintu Masuk")
-    ax.set_ylabel("Total Kunjungan")
-    ax.tick_params(axis='x', rotation=45)
+    ax.set_xlabel("Total Kunjungan")
+    ax.set_ylabel("Pintu Masuk")
     st.pyplot(fig)
 
-    st.markdown("""
+    st.markdown(""" 
     - **Pintu Udara**: Merupakan jalur utama bagi wisatawan yang menggunakan transportasi udara.
     - **Pintu Laut**: Jalur yang digunakan oleh wisatawan yang datang dengan kapal laut.
     - **Pintu Darat**: Jalur yang digunakan oleh wisatawan yang datang melalui perjalanan darat.
