@@ -26,7 +26,7 @@ if kategori_jalur == "A. Pintu Udara":
 elif kategori_jalur == "B. Pintu Laut":
     df_filtered_jalur = df.iloc[17:24]  # Baris 19 hingga 25
 elif kategori_jalur == "C. Pintu Darat":
-    df_filtered_jalur = df.iloc[26:31]  # Baris 27 hingga 32
+    df_filtered_jalur = df.iloc[25:31]  # Baris 27 hingga 32
 
 # Pilih pintu masuk spesifik berdasarkan jalur
 pintu_pilihan = st.sidebar.selectbox(
