@@ -118,7 +118,7 @@ if tabs == "Visualisasi Data":
     ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
     ax.set_xlabel("Bulan")
     ax.set_ylabel("Total Kunjungan")
-    ax.tick_params(axis='x', rotation=45)
+    ax.tick_params(axis='x', rotation=90)  # Mengubah label sumbu X menjadi vertikal
     st.pyplot(fig)
 
     # Menambahkan Line Chart (Trend Kunjungan Bulanan)
@@ -127,7 +127,7 @@ if tabs == "Visualisasi Data":
     ax_trend.set_title(f"Tren Kunjungan Bulanan di {pintu_pilihan}")
     ax_trend.set_xlabel("Bulan")
     ax_trend.set_ylabel("Total Kunjungan")
-    ax_trend.tick_params(axis='x', rotation=45)
+    ax_trend.tick_params(axis='x', rotation=90)  # Mengubah label sumbu X menjadi vertikal
     st.pyplot(fig_trend)
 
 elif tabs == "Analisis Keseluruhan":
@@ -141,7 +141,7 @@ elif tabs == "Analisis Keseluruhan":
     ax.set_title("Total Kunjungan Wisata per Pintu Masuk")
     ax.set_xlabel("Pintu Masuk")
     ax.set_ylabel("Total Kunjungan")
-    ax.tick_params(axis='x', rotation=45)
+    ax.tick_params(axis='x', rotation=90)  # Mengubah label sumbu X menjadi vertikal
     st.pyplot(fig)
 
     # Line chart untuk tren total kunjungan tahunan per pintu masuk
