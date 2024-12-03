@@ -32,6 +32,13 @@ df_all_years.columns = [
 numeric_columns = df_all_years.columns[2:-1]  # Kolom angka (Januari hingga Tahunan)
 df_all_years[numeric_columns] = df_all_years[numeric_columns].apply(pd.to_numeric, errors='coerce')
 
+# Widget untuk memilih Tahun dan Bulan
+tahun = st.sidebar.selectbox("Pilih Tahun", df_all_years["Tahun"].unique())
+bulan = st.sidebar.selectbox("Pilih Bulan", [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+])
+
 # Filtering berdasarkan kategori jalur
 kategori_jalur = st.sidebar.selectbox(
     "Pilih Kategori Jalur",
@@ -51,12 +58,15 @@ pintu_pilihan = st.sidebar.selectbox(
     df_filtered_jalur["Pintu Masuk"].unique()
 )
 
-# Filter data berdasarkan pilihan pintu masuk
-data_filtered = df_filtered_jalur[df_filtered_jalur["Pintu Masuk"] == pintu_pilihan]
+# Filter data berdasarkan pilihan pintu masuk dan tahun
+data_filtered = df_filtered_jalur[
+    (df_filtered_jalur["Pintu Masuk"] == pintu_pilihan) &
+    (df_filtered_jalur["Tahun"] == tahun)
+]
 
 # Visualisasi Data
 st.title("Analisis Kunjungan Wisata Mancanegara")
-st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan}")
+st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun} Bulan {bulan}")
 
 # Visualisasi kunjungan tahunan
 st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {data_filtered['Tahunan'].values[0]:,.2f}")
