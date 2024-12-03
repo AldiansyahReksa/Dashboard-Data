@@ -33,7 +33,7 @@ numeric_columns = df_all_years.columns[2:-1]  # Kolom angka (Januari hingga Tahu
 df_all_years[numeric_columns] = df_all_years[numeric_columns].apply(pd.to_numeric, errors='coerce')
 
 # Widget untuk memilih Tahun dan Bulan
-tahun = st.sidebar.selectbox("Pilih Tahun", df_all_years["Tahun"].unique())
+tahun = st.sidebar.selectbox("Pilih Tahun", df_all_years["Tahunan"].unique())
 bulan = st.sidebar.selectbox("Pilih Bulan", [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
