@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+from datetime import datetime
 
 # Daftar file dataset
 file_paths = {
@@ -14,24 +15,35 @@ file_paths = {
     '2023': 'data_2023.xlsx'
 }
 
-# Widget untuk memilih Tahun dan Bulan
-tahun = st.sidebar.selectbox("Pilih Tahun", list(file_paths.keys()))
-bulan = st.sidebar.selectbox("Pilih Bulan", [
-    "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-])
+# Widget untuk memilih Tahun dan Bulan menggunakan date_input
+date_input = st.sidebar.date_input(
+    "Pilih Tahun dan Bulan",
+    min_value=datetime(2017, 1, 1),
+    max_value=datetime(2023, 12, 31),
+    value=datetime(2023, 1, 1)
+)
+
+# Extract Tahun dan Bulan dari tanggal yang dipilih
+tahun = date_input.year
+bulan = date_input.strftime('%B')  # Nama bulan (misal "Januari")
 
 # Load data untuk tahun yang dipilih
-file_path = file_paths[tahun]
-df = pd.read_excel(file_path, skiprows=1)  # Abaikan header tambahan
+@st.cache_data  # Cache data untuk menghindari pemrosesan ulang yang tidak perlu
+def load_data(tahun):
+    file_path = file_paths[str(tahun)]
+    df = pd.read_excel(file_path, skiprows=1)  # Abaikan header tambahan
 
-# Bersihkan dan atur ulang kolom
-df.columns = [
-    "Pintu Masuk", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan"
-]
-numeric_columns = df.columns[2:]  # Kolom angka (Januari hingga Tahunan)
-df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric, errors='coerce')
+    # Bersihkan dan atur ulang kolom
+    df.columns = [
+        "Pintu Masuk", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan"
+    ]
+    numeric_columns = df.columns[2:]  # Kolom angka (Januari hingga Tahunan)
+    df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric, errors='coerce')
+    
+    return df
+
+df = load_data(tahun)  # Memuat data untuk tahun yang dipilih
 
 # Filtering berdasarkan kategori jalur
 kategori_jalur = st.sidebar.selectbox(
@@ -61,13 +73,22 @@ data_filtered = df_filtered_jalur[
 st.title("Analisis Kunjungan Wisata Mancanegara")
 st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun} Bulan {bulan}")
 
-# Visualisasi kunjungan tahunan
-st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {data_filtered['Tahunan'].values[0]:,.2f}")
+# Update nilai Total Kunjungan Tahunan
+total_kunjungan_tahunan = data_filtered['Tahunan'].values[0] if not data_filtered.empty else 0
+st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {total_kunjungan_tahunan:,.2f}")
 
 # Visualisasi distribusi bulanan
 bulan_data = data_filtered.iloc[0, 2:-1].reset_index()
 bulan_data.columns = ["Bulan", "Total Kunjungan"]
 
+# Cari indeks bulan yang dipilih
+bulan_index = data_filtered.columns.get_loc(bulan)  # Mengambil kolom berdasarkan bulan yang dipilih
+
+# Nilai total kunjungan bulan yang dipilih
+total_bulan = data_filtered.iloc[0, bulan_index] if not data_filtered.empty else 0
+st.write(f"**Total Kunjungan Bulan {bulan}:** {total_bulan:,.2f}")
+
+# Plot chart distribusi bulanan
 fig, ax = plt.subplots(figsize=(10, 6))
 sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax)
 ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
