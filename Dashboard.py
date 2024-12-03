@@ -133,10 +133,3 @@ if st.sidebar.checkbox("Tampilkan Analisis Keseluruhan"):
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
 
-# Korelasi antar bulan
-if st.sidebar.checkbox("Tampilkan Korelasi Antar Bulan"):
-    corr_matrix = df_filtered_jalur[numeric_columns[:-1]].corr()  # Kecualikan kolom Tahunan
-    fig, ax = plt.subplots(figsize=(12, 8))
-    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', ax=ax)
-    ax.set_title("Matriks Korelasi Antar Bulan")
-    st.pyplot()
