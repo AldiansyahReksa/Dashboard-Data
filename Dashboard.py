@@ -27,7 +27,7 @@ df_all_years = pd.concat(dfs, ignore_index=True)
 # Bersihkan dan atur ulang kolom
 df_all_years.columns = [
     "Pintu Masuk", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan", "Tahun"
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan"
 ]
 numeric_columns = df_all_years.columns[2:-1]  # Kolom angka (Januari hingga Tahunan)
 df_all_years[numeric_columns] = df_all_years[numeric_columns].apply(pd.to_numeric, errors='coerce')
