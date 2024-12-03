@@ -15,6 +15,21 @@ file_paths = {
     '2023': 'data_2023.xlsx'
 }
 
+
+# Streamlit Layout
+st.sidebar.title("Dashboard Data Kunjungan Wisata")
+st.sidebar.write("**Created by Kelompok 3**")
+st.sidebar.image("raspberry.png", use_column_width=True)
+
+st.sidebar.write("""
+- **Aldiansyah Reksa Pratama** - NRP: 220434015  
+- **Almayda Faturohman** - NRP: 220434015  
+- **M.Fakhrijal Pratama** - NRP: 220434015  
+- **Rifky Azis** - NRP: 220434015  
+- **Melly Diyani** - NRP: 220434015
+""")
+
+
 # Daftar bulan dalam bahasa Indonesia
 bulan_indonesia = {
     "January": "Januari", "February": "Februari", "March": "Maret", "April": "April",
