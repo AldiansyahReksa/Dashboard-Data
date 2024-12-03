@@ -144,10 +144,16 @@ elif tabs == "Analisis Keseluruhan":
     ax.tick_params(axis='x', rotation=90)  # Mengubah label sumbu X menjadi vertikal
     st.pyplot(fig)
 
-# Menambahkan Line Chart (Trend Kunjungan Bulanan) secara vertikal
-    fig_trend, ax_trend = plt.subplots(figsize=(10, 6))
-    sns.lineplot(data=total_data, x="Pintu Masuk", y="Total Kunjungan", marker='o', ax=ax_trend)
-    ax_trend.set_title("Tren Kunjungan Wisata per Pintu Masuk")
-    ax_trend.set_xlabel("Pintu Masuk")
-    ax_trend.set_ylabel("Total Kunjungan")
-    st.pyplot(fig_trend)
+# Menambahkan Line Chart (Trend Kunjungan Bulanan) secara vertikal dengan rotasi label sumbu X
+fig_trend, ax_trend = plt.subplots(figsize=(10, 6))
+sns.lineplot(data=bulan_data, y="Bulan", x="Total Kunjungan", marker='o', ax=ax_trend)
+ax_trend.set_title(f"Tren Kunjungan Bulanan di {pintu_pilihan}")
+ax_trend.set_ylabel("Bulan")
+ax_trend.set_xlabel("Total Kunjungan")
+ax_trend.tick_params(axis='y', rotation=0)  # Mengubah label sumbu Y menjadi horizontal
+
+# Rotasi label sumbu X agar tidak bertabrakan
+ax_trend.set_xticklabels(ax_trend.get_xticklabels(), rotation=90, ha="right")
+
+st.pyplot(fig_trend)
+
