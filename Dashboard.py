@@ -96,7 +96,7 @@ st.title("Analisis Kunjungan Wisata Mancanegara")
 st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun} Bulan {bulan}")
 
 # Membuat tab layout
-tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Analisis Keseluruhan", "Korelasi Bulan"])
+tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Analisis Keseluruhan"])
 
 if tabs == "Visualisasi Data":
     # Update nilai Total Kunjungan Tahunan
