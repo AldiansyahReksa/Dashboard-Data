@@ -156,13 +156,16 @@ elif tabs == "Grafik Trend":
     # Membuat plot trend
     fig, ax = plt.subplots(figsize=(10, 6))
     trend_data.plot(ax=ax, marker='o', linestyle='-', markersize=6)
+    
+    # Mengatur label bulan pada sumbu x
+    ax.set_xticks(range(len(trend_data.index)))
+    ax.set_xticklabels(trend_data.index, rotation=45)
+    
     ax.set_title(f"Tren Kunjungan Wisatawan di {pintu_pilihan} (Tahun {tahun})")
     ax.set_xlabel("Bulan")
     ax.set_ylabel("Total Kunjungan")
-    ax.set_xticklabels(trend_data.index, rotation=45)
     st.pyplot(fig)
 
     st.markdown("""
     Grafik ini menunjukkan tren jumlah kunjungan wisatawan setiap bulan untuk tahun yang dipilih.
     """)
-
