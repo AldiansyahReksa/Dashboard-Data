@@ -97,7 +97,7 @@ st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun
 tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Grafik Trend"], index=0)
 
 # Menata elemen dengan kolom
-col1, col2 = st.columns(1)
+col1, col2 = st.columns(2)
 
 # Visualisasi Data
 if tabs == "Visualisasi Data":
@@ -126,6 +126,7 @@ if tabs == "Visualisasi Data":
         ax.tick_params(axis='x', rotation=45)
         st.pyplot(fig)
 
+    with col2:
         st.markdown("### 📊 Analisis Total Kunjungan Wisata per Pintu Masuk")
         total_data = df_filtered_jalur.groupby("Pintu Masuk")["Tahunan"].sum().reset_index()
         total_data.columns = ["Pintu Masuk", "Total Kunjungan"]
