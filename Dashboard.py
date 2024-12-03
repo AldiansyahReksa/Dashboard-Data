@@ -4,40 +4,34 @@ import seaborn as sns
 import streamlit as st
 
 # Daftar file dataset
-file_paths = [
-    'data_2017.xlsx',
-    'data_2018.xlsx',
-    'data_2019.xlsx',
-    'data_2020.xlsx',
-    'data_2021.xlsx',
-    'data_2022.xlsx',
-    'data_2023.xlsx'
-]
-
-# Membaca dan menggabungkan data dari semua file
-dfs = []
-for file_path in file_paths:
-    df = pd.read_excel(file_path, skiprows=1)  # Abaikan header tambahan
-    df['Tahun'] = file_path.split('_')[1].split('.')[0]  # Menambahkan kolom Tahun berdasarkan nama file
-    dfs.append(df)
-
-# Menggabungkan semua dataframe menjadi satu
-df_all_years = pd.concat(dfs, ignore_index=True)
-
-# Bersihkan dan atur ulang kolom
-df_all_years.columns = [
-    "Pintu Masuk", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan"
-]
-numeric_columns = df_all_years.columns[2:-1]  # Kolom angka (Januari hingga Tahunan)
-df_all_years[numeric_columns] = df_all_years[numeric_columns].apply(pd.to_numeric, errors='coerce')
+file_paths = {
+    '2017': 'data_2017.xlsx',
+    '2018': 'data_2018.xlsx',
+    '2019': 'data_2019.xlsx',
+    '2020': 'data_2020.xlsx',
+    '2021': 'data_2021.xlsx',
+    '2022': 'data_2022.xlsx',
+    '2023': 'data_2023.xlsx'
+}
 
 # Widget untuk memilih Tahun dan Bulan
-tahun = st.sidebar.selectbox("Pilih Tahun", df_all_years["Tahunan"].unique())
+tahun = st.sidebar.selectbox("Pilih Tahun", list(file_paths.keys()))
 bulan = st.sidebar.selectbox("Pilih Bulan", [
     "Januari", "Februari", "Maret", "April", "Mei", "Juni", 
     "Juli", "Agustus", "September", "Oktober", "November", "Desember"
 ])
+
+# Load data untuk tahun yang dipilih
+file_path = file_paths[tahun]
+df = pd.read_excel(file_path, skiprows=1)  # Abaikan header tambahan
+
+# Bersihkan dan atur ulang kolom
+df.columns = [
+    "Pintu Masuk", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan"
+]
+numeric_columns = df.columns[2:]  # Kolom angka (Januari hingga Tahunan)
+df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric, errors='coerce')
 
 # Filtering berdasarkan kategori jalur
 kategori_jalur = st.sidebar.selectbox(
@@ -46,11 +40,11 @@ kategori_jalur = st.sidebar.selectbox(
 )
 
 if kategori_jalur == "A. Pintu Udara":
-    df_filtered_jalur = df_all_years.iloc[0:16]  # Baris 0 hingga 17
+    df_filtered_jalur = df.iloc[0:16]  # Baris 0 hingga 17
 elif kategori_jalur == "B. Pintu Laut":
-    df_filtered_jalur = df_all_years.iloc[17:24]  # Baris 19 hingga 25
+    df_filtered_jalur = df.iloc[17:24]  # Baris 19 hingga 25
 elif kategori_jalur == "C. Pintu Darat":
-    df_filtered_jalur = df_all_years.iloc[25:31]  # Baris 27 hingga 32
+    df_filtered_jalur = df.iloc[25:31]  # Baris 27 hingga 32
 
 # Pilih pintu masuk spesifik berdasarkan jalur
 pintu_pilihan = st.sidebar.selectbox(
@@ -58,10 +52,9 @@ pintu_pilihan = st.sidebar.selectbox(
     df_filtered_jalur["Pintu Masuk"].unique()
 )
 
-# Filter data berdasarkan pilihan pintu masuk dan tahun
+# Filter data berdasarkan pilihan pintu masuk dan bulan
 data_filtered = df_filtered_jalur[
-    (df_filtered_jalur["Pintu Masuk"] == pintu_pilihan) &
-    (df_filtered_jalur["Tahun"] == tahun)
+    (df_filtered_jalur["Pintu Masuk"] == pintu_pilihan)
 ]
 
 # Visualisasi Data
