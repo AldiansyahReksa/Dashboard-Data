@@ -22,6 +22,21 @@ bulan_indonesia = {
     "September": "September", "October": "Oktober", "November": "November", "December": "Desember"
 }
 
+
+# Streamlit Layout
+st.sidebar.title("Dashboard Data Kunjungan Wisata")
+st.sidebar.write("**Created by Kelompok 3**")
+st.sidebar.image("raspberry.png", use_column_width=True)
+
+st.sidebar.write("""
+- **Aldiansyah Reksa Pratama** - NRP: 220434015  
+- **Almayda Faturohman** - NRP: 210141009
+- **M.Fakhrijal Pratama** - NRP: 210414017  
+- **Rifky Azis** - NRP: 210414018  
+- **Melly Diyani** - NRP: 210414028
+""")
+
+
 # Widget untuk memilih Tahun dan Bulan menggunakan date_input
 date_input = st.sidebar.date_input(
     "Pilih Tahun dan Bulan",
@@ -119,12 +134,4 @@ elif tabs == "Analisis Keseluruhan":
     ax.set_xlabel("Pintu Masuk")
     ax.set_ylabel("Total Kunjungan")
     ax.tick_params(axis='x', rotation=45)
-    st.pyplot(fig)
-
-elif tabs == "Korelasi Bulan":
-    st.subheader("Korelasi Antar Bulan")
-    corr_matrix = df_filtered_jalur[numeric_columns[:-1]].corr()  # Kecualikan kolom Tahunan
-    fig, ax = plt.subplots(figsize=(12, 8))
-    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', ax=ax)
-    ax.set_title("Matriks Korelasi Antar Bulan")
     st.pyplot(fig)
