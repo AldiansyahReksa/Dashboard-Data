@@ -15,21 +15,6 @@ file_paths = {
     '2023': 'data_2023.xlsx'
 }
 
-
-# Streamlit Layout
-st.sidebar.title("Dashboard Data Kunjungan Wisata")
-st.sidebar.write("**Created by Kelompok 3**")
-st.sidebar.image("raspberry.png", use_column_width=True)
-
-st.sidebar.write("""
-- **Aldiansyah Reksa Pratama** - NRP: 220434015  
-- **Almayda Faturohman** - NRP: 210414009  
-- **M.Fakhrijal Pratama** - NRP: 210414017 
-- **Rifky Azis** - NRP: 210414018  
-- **Melly Diyani** - NRP: 210414028
-""")
-
-
 # Daftar bulan dalam bahasa Indonesia
 bulan_indonesia = {
     "January": "Januari", "February": "Februari", "March": "Maret", "April": "April",
@@ -95,32 +80,35 @@ data_filtered = df_filtered_jalur[
 st.title("Analisis Kunjungan Wisata Mancanegara")
 st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun} Bulan {bulan}")
 
-# Update nilai Total Kunjungan Tahunan
-total_kunjungan_tahunan = data_filtered['Tahunan'].values[0] if not data_filtered.empty else 0
-st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {total_kunjungan_tahunan:,.2f}")
+# Membuat tab layout
+tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Analisis Keseluruhan", "Korelasi Bulan"])
 
-# Visualisasi distribusi bulanan
-bulan_data = data_filtered.iloc[0, 2:-1].reset_index()
-bulan_data.columns = ["Bulan", "Total Kunjungan"]
+if tabs == "Visualisasi Data":
+    # Update nilai Total Kunjungan Tahunan
+    total_kunjungan_tahunan = data_filtered['Tahunan'].values[0] if not data_filtered.empty else 0
+    st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {total_kunjungan_tahunan:,.2f}")
 
-# Cari indeks bulan yang dipilih
-bulan_index = data_filtered.columns.get_loc(bulan)  # Mengambil kolom berdasarkan bulan yang dipilih
+    # Visualisasi distribusi bulanan
+    bulan_data = data_filtered.iloc[0, 2:-1].reset_index()
+    bulan_data.columns = ["Bulan", "Total Kunjungan"]
 
-# Nilai total kunjungan bulan yang dipilih
-total_bulan = data_filtered.iloc[0, bulan_index] if not data_filtered.empty else 0
-st.write(f"**Total Kunjungan Bulan {bulan}:** {total_bulan:,.2f}")
+    # Cari indeks bulan yang dipilih
+    bulan_index = data_filtered.columns.get_loc(bulan)  # Mengambil kolom berdasarkan bulan yang dipilih
 
-# Plot chart distribusi bulanan
-fig, ax = plt.subplots(figsize=(10, 6))
-sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax)
-ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
-ax.set_xlabel("Bulan")
-ax.set_ylabel("Total Kunjungan")
-ax.tick_params(axis='x', rotation=45)
-st.pyplot(fig)
+    # Nilai total kunjungan bulan yang dipilih
+    total_bulan = data_filtered.iloc[0, bulan_index] if not data_filtered.empty else 0
+    st.write(f"**Total Kunjungan Bulan {bulan}:** {total_bulan:,.2f}")
 
-# Analisis keseluruhan
-if st.sidebar.checkbox("Tampilkan Analisis Keseluruhan"):
+    # Plot chart distribusi bulanan
+    fig, ax = plt.subplots(figsize=(10, 6))
+    sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax)
+    ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
+    ax.set_xlabel("Bulan")
+    ax.set_ylabel("Total Kunjungan")
+    ax.tick_params(axis='x', rotation=45)
+    st.pyplot(fig)
+
+elif tabs == "Analisis Keseluruhan":
     st.subheader("Total Kunjungan Wisata untuk Semua Pintu Masuk")
     total_data = df_filtered_jalur.groupby("Pintu Masuk")["Tahunan"].sum().reset_index()
     total_data.columns = ["Pintu Masuk", "Total Kunjungan"]
@@ -133,3 +121,10 @@ if st.sidebar.checkbox("Tampilkan Analisis Keseluruhan"):
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
 
+elif tabs == "Korelasi Bulan":
+    st.subheader("Korelasi Antar Bulan")
+    corr_matrix = df_filtered_jalur[numeric_columns[:-1]].corr()  # Kecualikan kolom Tahunan
+    fig, ax = plt.subplots(figsize=(12, 8))
+    sns.heatmap(corr_matrix, annot=True, cmap='coolwarm', ax=ax)
+    ax.set_title("Matriks Korelasi Antar Bulan")
+    st.pyplot(fig)
