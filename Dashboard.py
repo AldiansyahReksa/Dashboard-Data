@@ -22,7 +22,7 @@ kategori_jalur = st.sidebar.selectbox(
 )
 
 if kategori_jalur == "A. Pintu Udara":
-    df_filtered_jalur = df.iloc[0:18]  # Baris 0 hingga 17
+    df_filtered_jalur = df.iloc[0:9]  # Baris 0 hingga 17
 elif kategori_jalur == "B. Pintu Laut":
     df_filtered_jalur = df.iloc[19:26]  # Baris 19 hingga 25
 elif kategori_jalur == "C. Pintu Darat":
