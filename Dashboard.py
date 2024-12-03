@@ -9,7 +9,7 @@ df = pd.read_excel(file_path, skiprows=1)  # Abaikan header tambahan
 
 # Bersihkan dan atur ulang kolom
 df.columns = [
-    "Pintu Masuk", "Jumlah", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Pintu Masuk", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
     "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan"
 ]
 numeric_columns = df.columns[2:]  # Kolom angka (Januari hingga Tahunan)
