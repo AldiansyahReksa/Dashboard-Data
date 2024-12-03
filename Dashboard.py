@@ -23,10 +23,10 @@ st.sidebar.image("raspberry.png", use_column_width=True)
 
 st.sidebar.write("""
 - **Aldiansyah Reksa Pratama** - NRP: 220434015  
-- **Almayda Faturohman** - NRP: 220434015  
-- **M.Fakhrijal Pratama** - NRP: 220434015  
-- **Rifky Azis** - NRP: 220434015  
-- **Melly Diyani** - NRP: 220434015
+- **Almayda Faturohman** - NRP: 210414009  
+- **M.Fakhrijal Pratama** - NRP: 210414017 
+- **Rifky Azis** - NRP: 210414018  
+- **Melly Diyani** - NRP: 210414028
 """)
 
 
