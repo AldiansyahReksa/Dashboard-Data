@@ -3,17 +3,34 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
 
-# Load data
-file_path = 'data_2017.xlsx'  # Ganti dengan path file Anda
-df = pd.read_excel(file_path, skiprows=1)  # Abaikan header tambahan
+# Daftar file dataset
+file_paths = [
+    'data_2017.xlsx',
+    'data_2018.xlsx',
+    'data_2019.xlsx',
+    'data_2020.xlsx',
+    'data_2021.xlsx',
+    'data_2022.xlsx',
+    'data_2023.xlsx'
+]
+
+# Membaca dan menggabungkan data dari semua file
+dfs = []
+for file_path in file_paths:
+    df = pd.read_excel(file_path, skiprows=1)  # Abaikan header tambahan
+    df['Tahun'] = file_path.split('_')[1].split('.')[0]  # Menambahkan kolom Tahun berdasarkan nama file
+    dfs.append(df)
+
+# Menggabungkan semua dataframe menjadi satu
+df_all_years = pd.concat(dfs, ignore_index=True)
 
 # Bersihkan dan atur ulang kolom
-df.columns = [
+df_all_years.columns = [
     "Pintu Masuk", "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-    "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan"
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember", "Tahunan", "Tahun"
 ]
-numeric_columns = df.columns[2:]  # Kolom angka (Januari hingga Tahunan)
-df[numeric_columns] = df[numeric_columns].apply(pd.to_numeric, errors='coerce')
+numeric_columns = df_all_years.columns[2:-1]  # Kolom angka (Januari hingga Tahunan)
+df_all_years[numeric_columns] = df_all_years[numeric_columns].apply(pd.to_numeric, errors='coerce')
 
 # Filtering berdasarkan kategori jalur
 kategori_jalur = st.sidebar.selectbox(
@@ -22,11 +39,11 @@ kategori_jalur = st.sidebar.selectbox(
 )
 
 if kategori_jalur == "A. Pintu Udara":
-    df_filtered_jalur = df.iloc[0:16]  # Baris 0 hingga 17
+    df_filtered_jalur = df_all_years.iloc[0:16]  # Baris 0 hingga 17
 elif kategori_jalur == "B. Pintu Laut":
-    df_filtered_jalur = df.iloc[17:24]  # Baris 19 hingga 25
+    df_filtered_jalur = df_all_years.iloc[17:24]  # Baris 19 hingga 25
 elif kategori_jalur == "C. Pintu Darat":
-    df_filtered_jalur = df.iloc[25:31]  # Baris 27 hingga 32
+    df_filtered_jalur = df_all_years.iloc[25:31]  # Baris 27 hingga 32
 
 # Pilih pintu masuk spesifik berdasarkan jalur
 pintu_pilihan = st.sidebar.selectbox(
