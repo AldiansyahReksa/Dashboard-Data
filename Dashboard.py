@@ -15,6 +15,13 @@ file_paths = {
     '2023': 'data_2023.xlsx'
 }
 
+# Daftar bulan dalam bahasa Indonesia
+bulan_indonesia = {
+    "January": "Januari", "February": "Februari", "March": "Maret", "April": "April",
+    "May": "Mei", "June": "Juni", "July": "Juli", "August": "Agustus",
+    "September": "September", "October": "Oktober", "November": "November", "December": "Desember"
+}
+
 # Widget untuk memilih Tahun dan Bulan menggunakan date_input
 date_input = st.sidebar.date_input(
     "Pilih Tahun dan Bulan",
@@ -25,7 +32,7 @@ date_input = st.sidebar.date_input(
 
 # Extract Tahun dan Bulan dari tanggal yang dipilih
 tahun = date_input.year
-bulan = date_input.strftime('%B')  # Nama bulan (misal "Januari")
+bulan = bulan_indonesia[date_input.strftime('%B')]  # Mengubah nama bulan ke bahasa Indonesia
 
 # Load data untuk tahun yang dipilih
 @st.cache_data  # Cache data untuk menghindari pemrosesan ulang yang tidak perlu
