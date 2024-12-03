@@ -94,7 +94,7 @@ st.title("📊 Analisis Kunjungan Wisata Mancanegara")
 st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun} Bulan {bulan}")
 
 # Membuat tab layout
-tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Analisis Keseluruhan"], index=0)
+tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Grafik Trend"], index=0)
 
 # Menata elemen dengan kolom
 col1, col2 = st.columns(2)
@@ -145,23 +145,24 @@ if tabs == "Visualisasi Data":
         - **Pintu Darat**: Jalur yang digunakan oleh wisatawan yang datang melalui perjalanan darat.
         """)
 
-# Analisis Keseluruhan
-elif tabs == "Analisis Keseluruhan":
-    st.markdown("### 📊 Analisis Total Kunjungan Wisata per Pintu Masuk")
-    total_data = df_filtered_jalur.groupby("Pintu Masuk")["Tahunan"].sum().reset_index()
-    total_data.columns = ["Pintu Masuk", "Total Kunjungan"]
+# Grafik Trend
+elif tabs == "Grafik Trend":
+    st.markdown("### 📉 Grafik Trend Kunjungan Wisatawan per Bulan")
+    
+    # Ambil data kunjungan per bulan untuk tahun yang dipilih
+    trend_data = df_filtered_jalur.loc[:, "Januari":"Desember"].transpose()
+    trend_data.columns = df_filtered_jalur["Pintu Masuk"]
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.barplot(data=total_data, x="Pintu Masuk", y="Total Kunjungan", ax=ax, palette="coolwarm")
-    ax.set_title("Total Kunjungan Wisata per Pintu Masuk")
-    ax.set_xlabel("Pintu Masuk")
+    # Membuat plot trend
+    fig, ax = plt.subplots(figsize=(10, 6))
+    trend_data.plot(ax=ax, marker='o', linestyle='-', markersize=6)
+    ax.set_title(f"Tren Kunjungan Wisatawan di {pintu_pilihan} (Tahun {tahun})")
+    ax.set_xlabel("Bulan")
     ax.set_ylabel("Total Kunjungan")
-    ax.tick_params(axis='x', rotation=45)
+    ax.set_xticklabels(trend_data.index, rotation=45)
     st.pyplot(fig)
 
     st.markdown("""
-    - **Pintu Udara**: Merupakan jalur utama bagi wisatawan yang menggunakan transportasi udara.
-    - **Pintu Laut**: Jalur yang digunakan oleh wisatawan yang datang dengan kapal laut.
-    - **Pintu Darat**: Jalur yang digunakan oleh wisatawan yang datang melalui perjalanan darat.
+    Grafik ini menunjukkan tren jumlah kunjungan wisatawan setiap bulan untuk tahun yang dipilih.
     """)
 
