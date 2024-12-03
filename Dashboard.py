@@ -23,12 +23,10 @@ bulan_indonesia = {
 }
 
 # Streamlit Layout
-st.set_page_config(page_title="Dashboard Data Kunjungan Wisata", layout="wide")
 st.sidebar.title("Dashboard Data Kunjungan Wisata")
 st.sidebar.write("**Created by Kelompok 3**")
 st.sidebar.image("raspberry.png", use_column_width=True)
 
-# Nama anggota
 st.sidebar.write("""
 - **Aldiansyah Reksa Pratama** - NRP: 220434015  
 - **Almayda Faturohman** - NRP: 210141009
@@ -92,73 +90,82 @@ data_filtered = df_filtered_jalur[(
 )]
 
 # Visualisasi Data
-st.markdown("<h1 style='text-align: center; color: #2a5d84;'>📊 Analisis Kunjungan Wisata Mancanegara</h1>", unsafe_allow_html=True)
+st.title("📊 Analisis Kunjungan Wisata Mancanegara")
 st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun} Bulan {bulan}")
 
 # Membuat tab layout
-tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Analisis Trend"], index=0)
+tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Grafik Trend"], index=0)
+
+# Menata elemen dengan kolom
+col1, col2 = st.columns(2)
 
 # Visualisasi Data
 if tabs == "Visualisasi Data":
-    st.markdown("### 📅 Distribusi Kunjungan Wisatawan Per Bulan")
-    total_kunjungan_tahunan = data_filtered['Tahunan'].values[0] if not data_filtered.empty else 0
-    st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {total_kunjungan_tahunan:,.2f}")
+    with col1:
+        st.markdown("### 📅 Distribusi Kunjungan Wisatawan Per Bulan")
+        total_kunjungan_tahunan = data_filtered['Tahunan'].values[0] if not data_filtered.empty else 0
+        st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {total_kunjungan_tahunan:,.2f}")
 
-    # Visualisasi distribusi bulanan
-    bulan_data = data_filtered.iloc[0, 2:-1].reset_index()
-    bulan_data.columns = ["Bulan", "Total Kunjungan"]
+        # Visualisasi distribusi bulanan
+        bulan_data = data_filtered.iloc[0, 2:-1].reset_index()
+        bulan_data.columns = ["Bulan", "Total Kunjungan"]
 
-    # Cari indeks bulan yang dipilih
-    bulan_index = data_filtered.columns.get_loc(bulan)  # Mengambil kolom berdasarkan bulan yang dipilih
+        # Cari indeks bulan yang dipilih
+        bulan_index = data_filtered.columns.get_loc(bulan)  # Mengambil kolom berdasarkan bulan yang dipilih
 
-    # Nilai total kunjungan bulan yang dipilih
-    total_bulan = data_filtered.iloc[0, bulan_index] if not data_filtered.empty else 0
-    st.write(f"**Total Kunjungan Bulan {bulan}:** {total_bulan:,.2f}")
+        # Nilai total kunjungan bulan yang dipilih
+        total_bulan = data_filtered.iloc[0, bulan_index] if not data_filtered.empty else 0
+        st.write(f"**Total Kunjungan Bulan {bulan}:** {total_bulan:,.2f}")
 
-    # Plot chart distribusi bulanan
-    fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax, palette="viridis", alpha=0.7)
-    ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
-    ax.set_xlabel("Bulan")
-    ax.set_ylabel("Total Kunjungan")
-    ax.tick_params(axis='x', rotation=45)
-    st.pyplot(fig)
+        # Plot chart distribusi bulanan
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax, palette="viridis")
+        ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
+        ax.set_xlabel("Bulan")
+        ax.set_ylabel("Total Kunjungan")
+        ax.tick_params(axis='x', rotation=45)
+        st.pyplot(fig)
 
-# Analisis Trend
-elif tabs == "Analisis Trend":
+    with col2:
+        st.markdown("### 📊 Analisis Total Kunjungan Wisata per Pintu Masuk")
+        total_data = df_filtered_jalur.groupby("Pintu Masuk")["Tahunan"].sum().reset_index()
+        total_data.columns = ["Pintu Masuk", "Total Kunjungan"]
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+        sns.barplot(data=total_data, x="Pintu Masuk", y="Total Kunjungan", ax=ax, palette="coolwarm")
+        ax.set_title("Total Kunjungan Wisata per Pintu Masuk")
+        ax.set_xlabel("Pintu Masuk")
+        ax.set_ylabel("Total Kunjungan")
+        ax.tick_params(axis='x', rotation=45)
+        st.pyplot(fig)
+
+        st.markdown("""
+        - **Pintu Udara**: Merupakan jalur utama bagi wisatawan yang menggunakan transportasi udara.
+        - **Pintu Laut**: Jalur yang digunakan oleh wisatawan yang datang dengan kapal laut.
+        - **Pintu Darat**: Jalur yang digunakan oleh wisatawan yang datang melalui perjalanan darat.
+        """)
+
+# Grafik Trend
+elif tabs == "Grafik Trend":
     st.markdown("### 📉 Grafik Trend Kunjungan Wisatawan per Bulan")
     
-    # Data trend bulanan
-    trend_data = data_filtered.loc[:, "Januari":"Desember"].transpose()
-    trend_data.columns = [pintu_pilihan]
-    
-    # Plot Trend Kunjungan per Bulan
+    # Ambil data kunjungan per bulan untuk tahun yang dipilih
+    trend_data = df_filtered_jalur.loc[:, "Januari":"Desember"].transpose()
+    trend_data.columns = df_filtered_jalur["Pintu Masuk"]
+
+    # Membuat plot trend
     fig, ax = plt.subplots(figsize=(10, 6))
-    trend_data.plot(ax=ax, marker='o', color='#2a5d84')
-    ax.set_title(f"Trend Kunjungan per Bulan di {pintu_pilihan} Tahun {tahun}")
+    trend_data.plot(ax=ax, marker='o', linestyle='-', markersize=6)
+    
+    # Mengatur label bulan pada sumbu x
+    ax.set_xticks(range(len(trend_data.index)))
+    ax.set_xticklabels(trend_data.index, rotation=45)
+    
+    ax.set_title(f"Tren Kunjungan Wisatawan di {pintu_pilihan} (Tahun {tahun})")
     ax.set_xlabel("Bulan")
-    ax.set_ylabel("Jumlah Kunjungan")
-    ax.tick_params(axis='x', rotation=45)
+    ax.set_ylabel("Total Kunjungan")
     st.pyplot(fig)
 
-    # Deskripsi Analisis Trend
-    st.markdown(f"Tren kunjungan untuk pintu masuk **{pintu_pilihan}** menunjukkan pola yang khas, dengan lonjakan pada bulan-bulan tertentu. Perubahan tren ini dapat dipengaruhi oleh berbagai faktor seperti musim liburan atau kebijakan pemerintah.")
-
-# Menambahkan CSS untuk gaya tambahan
-st.markdown(
-    """
-    <style>
-    .stButton > button {
-        background-color: #2a5d84;
-        color: white;
-        font-size: 20px;
-    }
-    .stRadio > div {
-        padding: 10px;
-    }
-    .stSelectbox select {
-        font-size: 16px;
-    }
-    </style>
-    """, unsafe_allow_html=True
-)
+    st.markdown("""
+    Grafik ini menunjukkan tren jumlah kunjungan wisatawan setiap bulan untuk tahun yang dipilih.
+    """)
