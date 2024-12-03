@@ -136,7 +136,7 @@ if tabs == "Visualisasi Data":
         ax.set_title("Total Kunjungan Wisata per Pintu Masuk")
         ax.set_xlabel("Pintu Masuk")
         ax.set_ylabel("Total Kunjungan")
-        ax.tick_params(axis='x', rotation=45)
+        ax.tick_params(axis='x', rotation=90)
         st.pyplot(fig)
 
         st.markdown("""
