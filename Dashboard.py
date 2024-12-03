@@ -22,7 +22,6 @@ bulan_indonesia = {
     "September": "September", "October": "Oktober", "November": "November", "December": "Desember"
 }
 
-
 # Streamlit Layout
 st.sidebar.title("Dashboard Data Kunjungan Wisata")
 st.sidebar.write("**Created by Kelompok 3**")
@@ -35,7 +34,6 @@ st.sidebar.write("""
 - **Rifky Azis** - NRP: 210414018  
 - **Melly Diyani** - NRP: 210414028
 """)
-
 
 # Widget untuk memilih Tahun dan Bulan menggunakan date_input
 date_input = st.sidebar.date_input(
@@ -87,19 +85,20 @@ pintu_pilihan = st.sidebar.selectbox(
 )
 
 # Filter data berdasarkan pilihan pintu masuk dan bulan
-data_filtered = df_filtered_jalur[
-    (df_filtered_jalur["Pintu Masuk"] == pintu_pilihan)
-]
+data_filtered = df_filtered_jalur[(
+    df_filtered_jalur["Pintu Masuk"] == pintu_pilihan
+)]
 
 # Visualisasi Data
-st.title("Analisis Kunjungan Wisata Mancanegara")
+st.title("📊 Analisis Kunjungan Wisata Mancanegara")
 st.subheader(f"Distribusi Wisatawan di Pintu Masuk: {pintu_pilihan} Tahun {tahun} Bulan {bulan}")
 
 # Membuat tab layout
-tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Analisis Keseluruhan"])
+tabs = st.radio("Pilih Lihat Data", ["Visualisasi Data", "Analisis Keseluruhan"], index=0)
 
+# Visualisasi Data
 if tabs == "Visualisasi Data":
-    # Update nilai Total Kunjungan Tahunan
+    st.markdown("### 📅 Distribusi Kunjungan Wisatawan Per Bulan")
     total_kunjungan_tahunan = data_filtered['Tahunan'].values[0] if not data_filtered.empty else 0
     st.write(f"**Total Kunjungan Tahunan di {pintu_pilihan}:** {total_kunjungan_tahunan:,.2f}")
 
@@ -116,22 +115,29 @@ if tabs == "Visualisasi Data":
 
     # Plot chart distribusi bulanan
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax)
+    sns.barplot(data=bulan_data, x="Bulan", y="Total Kunjungan", ax=ax, palette="viridis")
     ax.set_title(f"Distribusi Kunjungan Bulanan di {pintu_pilihan}")
     ax.set_xlabel("Bulan")
     ax.set_ylabel("Total Kunjungan")
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
 
+# Analisis Keseluruhan
 elif tabs == "Analisis Keseluruhan":
-    st.subheader("Total Kunjungan Wisata untuk Semua Pintu Masuk")
+    st.markdown("### 📊 Analisis Total Kunjungan Wisata per Pintu Masuk")
     total_data = df_filtered_jalur.groupby("Pintu Masuk")["Tahunan"].sum().reset_index()
     total_data.columns = ["Pintu Masuk", "Total Kunjungan"]
 
     fig, ax = plt.subplots(figsize=(10, 6))
-    sns.barplot(data=total_data, x="Pintu Masuk", y="Total Kunjungan", ax=ax)
+    sns.barplot(data=total_data, x="Pintu Masuk", y="Total Kunjungan", ax=ax, palette="coolwarm")
     ax.set_title("Total Kunjungan Wisata per Pintu Masuk")
     ax.set_xlabel("Pintu Masuk")
     ax.set_ylabel("Total Kunjungan")
     ax.tick_params(axis='x', rotation=45)
     st.pyplot(fig)
+
+    st.markdown("""
+    - **Pintu Udara**: Merupakan jalur utama bagi wisatawan yang menggunakan transportasi udara.
+    - **Pintu Laut**: Jalur yang digunakan oleh wisatawan yang datang dengan kapal laut.
+    - **Pintu Darat**: Jalur yang digunakan oleh wisatawan yang datang melalui perjalanan darat.
+    """)
