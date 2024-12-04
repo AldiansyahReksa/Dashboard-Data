@@ -147,7 +147,7 @@ if tabs == "Visualisasi Data":
 
 # Grafik Trend
 elif tabs == "Grafik Trend":
-    st.markdown("### 📉 Grafik Trend Kunjungan Wisatawan per Bulan")
+    st.markdown("### 📉 Grafik Trend Kunjungan Wisatawan per Tahun")
     
     # Ambil data kunjungan per bulan untuk tahun yang dipilih
     trend_data = df_filtered_jalur.loc[:, "Januari":"Desember"].transpose()
